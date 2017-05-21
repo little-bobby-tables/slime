@@ -1,33 +1,32 @@
-document <- doctype? tags_list crlf* eof;
+document <- doctype? tag+ crlf* eof;
 
 doctype <- space? 'doctype' space (!eol .)+ eol;
 
-% TODO: We can parse nested structure like this:
-% tags_list <- tag (crlf tag)*;
-% tag <- verbatim_text / space? tag_item (crlf empty_lines:(crlf space?)* indent tags_list dedent)? / '' &.;
-% Also remove dedent from eol definition and modify transforms accordingly
-tags_list <- tag (crlf indent? empty_lines:(space? crlf indent?)* tag:tag dedent*)*;
+tag <- (comment / verbatim_text / tag_item) crlf*;
 
-% NOTE: Leading whitespace is handled separately for comments and verbatim text
-tag <- comment / verbatim_text / space? tag_item / blank:(space? &eol);
+tag_item <- space? (embedded_engine / inline_html / code / html_tag);
 
-tag_item <- (embedded_engine / inline_html / code / html_tag);
+html_tag <- inline_tag / simple_tag;
+
+inline_tag <- tag:tag_shortcut spaces:tag_spaces? ':'
+  space children:(inline_tag / simple_tag);
+
+simple_tag <- tag:tag_shortcut spaces:tag_spaces space?
+  content:attributes_with_content children:nested_tags?;
+
+nested_tags <- crlf blank_line* indent children:tag+ dedent*;
 
 inline_html <- &'<' text_content;
 
-code <- inline:('=' '='? tag_spaces? / '-') space? code:code_lines;
+code <- inline:('=' '='? tag_spaces? / '-') space?
+  code:code_lines children:nested_tags?;
 code_lines <- code_line / code_line_with_brake crlf (indent code_lines dedent / code_lines);
 code_line <- (!(. eol) .)* !code_line_break . &eol;
 code_line_with_brake <- (!(. eol) .)* code_line_break &eol;
 code_line_break <-  ',' / '\\';
 
-html_tag <- inline_tag / simple_tag;
-
-inline_tag <- tag:tag_shortcut spaces:tag_spaces? ':' space children:(inline_tag / simple_tag);
-
-simple_tag <- tag:tag_shortcut spaces:tag_spaces? space? attrs_with_content:attributes_with_content?;
-
-attributes_with_content <- attributes space? simple_tag_content? / simple_tag_content_without_attrs;
+attributes_with_content <- attributes space? simple_tag_content?
+                         / simple_tag_content_without_attrs;
 
 simple_tag_content <- '/' / dynamic_content / text_content;
 
@@ -83,11 +82,9 @@ braces <- '{' (braces / !'}' .)* '}';
 
 interpolation <- '#{' (string / string_with_interpolation / !'}' .)* '}';
 
-comment <- html_comment / space? ie_comment / space? code_comment;
+comment <- html_comment / space? code_comment;
 
 html_comment <- indent:space? type:'/!' content:text_block;
-
-ie_comment <- '/[' condition:(!']' .)+ ']' space? content:(!eol .)*;
 
 code_comment <- '/' text_block;
 
@@ -108,6 +105,7 @@ embedded_engine_line <- text_with_interpolation / text / '';
 
 tag_name <- [a-zA-Z0-9_-]+;
 attribute_name <- [a-zA-Z0-9_@:-]+;
+blank_line <- space* crlf;
 space <- [ \t]+;
 indent <- '\x{0E}';
 dedent <- '\x{0F}';
