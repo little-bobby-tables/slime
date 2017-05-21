@@ -4,7 +4,7 @@ defmodule Slime.Parser.TextBlock do
   "
 
   import Slime.Parser.Transform, only: [wrap_in_quotes: 1]
-  alias Slime.Tree.Nodes.EExNode
+  alias Slime.Parser.Nodes.EExNode
 
   @doc """
   Given a text block and its declaration indentation level (see below),

@@ -13,11 +13,11 @@ defmodule Slime.Parser.Transform do
   alias Slime.Parser.TextBlock
   alias Slime.Doctype
 
-  alias Slime.Tree.Nodes.HTMLNode
-  alias Slime.Tree.Nodes.EExNode
-  alias Slime.Tree.Nodes.VerbatimTextNode
-  alias Slime.Tree.Nodes.HTMLCommentNode
-  alias Slime.Tree.Nodes.DoctypeNode
+  alias Slime.Parser.Nodes.HTMLNode
+  alias Slime.Parser.Nodes.EExNode
+  alias Slime.Parser.Nodes.VerbatimTextNode
+  alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.DoctypeNode
 
   @default_tag Application.get_env(:slime, :default_tag, "div")
   @sort_attrs Application.get_env(:slime, :sort_attrs, true)
@@ -66,12 +66,11 @@ defmodule Slime.Parser.Transform do
       attributes
     end
 
-    # TODO: is_closed!
-
     %HTMLNode{
       name: tag_name,
       attributes: attributes,
       spaces: input[:spaces],
+      closed: is_closed,
       children: children
     }
   end
@@ -277,7 +276,7 @@ defmodule Slime.Parser.Transform do
   def transform(:attribute_value, input, _index) do
     case input do
       {:simple, [_, content, _]} -> to_string(content)
-      {:dynamic, content} -> %EExNode{content: to_string(content), output: true}
+      {:dynamic, content} -> {:eex, to_string(content)}
     end
   end
 

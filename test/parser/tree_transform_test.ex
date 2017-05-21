@@ -2,11 +2,11 @@ defmodule Slime.Parser.TreeTransformTest do
   use ExUnit.Case, async: true
 
   import Slime.Parser, only: [parse: 1]
-  alias Slime.Tree.Nodes.HTMLNode
-  alias Slime.Tree.Nodes.EExNode
-  alias Slime.Tree.Nodes.VerbatimTextNode
-  alias Slime.Tree.Nodes.HTMLCommentNode
-  alias Slime.Tree.Nodes.DoctypeNode
+  alias Slime.Parser.Nodes.HTMLNode
+  alias Slime.Parser.Nodes.EExNode
+  alias Slime.Parser.Nodes.VerbatimTextNode
+  alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.DoctypeNode
 
   test "inline tags" do
     slime = """
@@ -41,6 +41,15 @@ defmodule Slime.Parser.TreeTransformTest do
         %HTMLNode{name: "p"}
       ]},
       %HTMLNode{name: "div"}
+    ]
+  end
+
+  test "closed nodes" do
+    slime = """
+    img src="url"/
+    """
+    assert parse(slime) == [
+      %HTMLNode{name: "img", attributes: [{"src", "url"}], closed: true}
     ]
   end
 
@@ -81,10 +90,8 @@ defmodule Slime.Parser.TreeTransformTest do
     """
     assert parse(slime) == [
       %HTMLNode{name: "p",
-        attributes: [
-          {"some-attribute", %EExNode{content: "inline", output: true}}],
-        children: [
-          %EExNode{content: "hey", output: true}]},
+        attributes: [{"some-attribute", {:eex, "inline"}}],
+        children: [%EExNode{content: "hey", output: true}]},
       %HTMLNode{name: "span", children: ["Text"]}
     ]
   end

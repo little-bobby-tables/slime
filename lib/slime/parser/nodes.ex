@@ -1,8 +1,9 @@
-defmodule Slime.Tree.Nodes do
+defmodule Slime.Parser.Nodes do
   defmodule HTMLNode do
     defstruct name: "",
               attributes: [],
               spaces: %{},
+              closed: false,
               children: []
   end
 
