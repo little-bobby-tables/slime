@@ -40,7 +40,7 @@ defmodule Slime.Parser.AttributesKeyword do
   defp merge_attribute_values(values, join_by) do
     result = join_attribute_values(values, join_by)
     if Enum.any?(values, &dynamic_value?/1) do
-      {:eex, content: ~s("#{result}"), inline: true}
+      {:eex, ~s("#{result}")}
     else
       result
     end
@@ -53,6 +53,6 @@ defmodule Slime.Parser.AttributesKeyword do
     values |> Enum.map(&attribute_val/1) |> List.flatten |> Enum.join(join_by)
   end
 
-  defp attribute_val({:eex, args}), do: "\#{" <> args[:content] <> "}"
+  defp attribute_val({:eex, content}), do: "\#{" <> content <> "}"
   defp attribute_val(value), do: value
 end

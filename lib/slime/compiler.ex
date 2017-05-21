@@ -14,6 +14,7 @@ defmodule Slime.Compiler do
     keygen source menuitem track wbr
   )
 
+  def compile([]), do: ""
   def compile(tree) do
     lines_sep = if Application.get_env(:slime, :keep_lines), do: "\n", else: ""
     tree
@@ -69,12 +70,14 @@ defmodule Slime.Compiler do
   end
   defp render(%EExNode{content: code, spaces: spaces, output: output} = node) do
     opening = (if output, do: "<%= ", else: "<% ") <> code <> " %>"
-    body = case node.children do
-      [] -> ""
-      children -> compile(node.children) <> "<% end %>"
+    closing = if Regex.match?(~r/(fn.*->| do)\s*$/, code) do
+      "<% end %>"
+    else
+      ""
     end
+    body = opening <> compile(node.children) <> closing
 
-    leading_space(spaces) <> opening <> body <> trailing_space(spaces)
+    leading_space(spaces) <> body <> trailing_space(spaces)
   end
   defp render(raw), do: raw
 

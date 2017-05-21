@@ -83,6 +83,24 @@ defmodule Slime.Parser.TreeTransformTest do
     ]
   end
 
+  test "embedded code (else is a child of if)" do
+    slime = """
+    = if condition do
+      | Something
+
+
+    - else
+      | Something else
+    """
+    assert parse(slime) == [
+      %EExNode{content: "if condition do", output: true, children: [
+        %VerbatimTextNode{content: ["Something"]},
+        %EExNode{content: "else", children: [
+          %VerbatimTextNode{content: ["Something else"]}]},
+      ]}
+    ]
+  end
+
   test "inline eex" do
     slime = """
     p some-attribute=inline = hey

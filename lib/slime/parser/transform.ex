@@ -77,8 +77,6 @@ defmodule Slime.Parser.Transform do
 
   def transform(:nested_tags, input, _index), do: input[:children]
 
-  # TODO: handle if/unless with else in grammar
-
   def transform(:html_comment, input, _index) do
     indent = indent_size(input[:indent])
     decl_indent = indent + String.length(input[:type])
@@ -158,8 +156,12 @@ defmodule Slime.Parser.Transform do
       content: input[:code],
       output: output,
       spaces: spaces,
-      children: input[:children]
+      children: input[:children] ++ input[:optional_else]
     }
+  end
+
+  def transform(:code_else_condition, input, _index) do
+    [%EExNode{content: "else", children: input[:children]}]
   end
 
   def transform(:code_lines, input, _index) do
