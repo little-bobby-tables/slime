@@ -31,7 +31,7 @@ defmodule Slime.Parser.TextBlock do
     {text, is_eex} = insert_line_spacing(lines, text_indent)
 
     if is_eex do
-      [%EExNode{code: wrap_in_quotes(text), output: true}]
+      [%EExNode{content: wrap_in_quotes(text), output: true}]
     else
       [text]
     end

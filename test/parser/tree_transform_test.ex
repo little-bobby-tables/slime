@@ -6,6 +6,7 @@ defmodule Slime.Parser.TreeTransformTest do
   alias Slime.Tree.Nodes.EExNode
   alias Slime.Tree.Nodes.VerbatimTextNode
   alias Slime.Tree.Nodes.HTMLCommentNode
+  alias Slime.Tree.Nodes.DoctypeNode
 
   test "inline tags" do
     slime = """
@@ -65,10 +66,10 @@ defmodule Slime.Parser.TreeTransformTest do
         = output
     """
     assert parse(slime) == [
-      %EExNode{code: "for thing <- stuff do", output: true, children: [
-        %EExNode{code: "output = process(thing)"},
+      %EExNode{content: "for thing <- stuff do", output: true, children: [
+        %EExNode{content: "output = process(thing)"},
         %HTMLNode{name: "p", children: [
-          %EExNode{code: "output", output: true}]}
+          %EExNode{content: "output", output: true}]}
       ]}
     ]
   end
@@ -81,9 +82,9 @@ defmodule Slime.Parser.TreeTransformTest do
     assert parse(slime) == [
       %HTMLNode{name: "p",
         attributes: [
-          {"some-attribute", %EExNode{code: "inline", output: true}}],
+          {"some-attribute", %EExNode{content: "inline", output: true}}],
         children: [
-          %EExNode{code: "hey", output: true}]},
+          %EExNode{content: "hey", output: true}]},
       %HTMLNode{name: "span", children: ["Text"]}
     ]
   end
@@ -96,7 +97,8 @@ defmodule Slime.Parser.TreeTransformTest do
     """
     assert parse(slime) == [
       %VerbatimTextNode{content: [
-        %EExNode{code: "\"multiline text with \#{interpolation}\"", output: true}]},
+        %EExNode{content: "\"multiline text with \#{interpolation}\"",
+                 output: true}]},
       %VerbatimTextNode{content: ["and trailing whitespace", " "]},
     ]
   end
@@ -104,5 +106,16 @@ defmodule Slime.Parser.TreeTransformTest do
   test "html comments" do
     slime = "/! html comment"
     assert parse(slime) == [%HTMLCommentNode{content: ["html comment"]}]
+  end
+
+  test "doctype" do
+    slime = """
+    doctype html
+    div
+    """
+    assert parse(slime) == [
+      %DoctypeNode{content: "html"},
+      %HTMLNode{name: "div"}
+    ]
   end
 end

@@ -17,6 +17,7 @@ defmodule Slime.Parser.Transform do
   alias Slime.Tree.Nodes.EExNode
   alias Slime.Tree.Nodes.VerbatimTextNode
   alias Slime.Tree.Nodes.HTMLCommentNode
+  alias Slime.Tree.Nodes.DoctypeNode
 
   @default_tag Application.get_env(:slime, :default_tag, "div")
   @sort_attrs Application.get_env(:slime, :sort_attrs, true)
@@ -41,10 +42,8 @@ defmodule Slime.Parser.Transform do
     end
   end
 
-  def transform(:doctype, [indent, _, _, type, _], _index) do
-    {indent_size(indent),
-      {:doctype, Doctype.for(to_string(type))}
-    }
+  def transform(:doctype, input, _index) do
+    %DoctypeNode{content: to_string(input[:type])}
   end
 
   def transform(:tag, [tag, _], _index), do: tag
@@ -157,7 +156,7 @@ defmodule Slime.Parser.Transform do
     end
 
     %EExNode{
-      code: input[:code],
+      content: input[:code],
       output: output,
       spaces: spaces,
       children: input[:children]
@@ -212,14 +211,14 @@ defmodule Slime.Parser.Transform do
   def transform(:text_content, input, _index) do
     case input do
       {:dynamic, content} ->
-        %EExNode{code: content |> to_string |> wrap_in_quotes, output: true}
+        %EExNode{content: content |> to_string |> wrap_in_quotes, output: true}
       {:simple, content} -> content
     end
   end
 
   def transform(:dynamic_content, input, _index) do
     content = input |> Enum.at(3) |> to_string
-    %EExNode{code: content, output: true}
+    %EExNode{content: content, output: true}
   end
 
   def transform(:tag_spaces, input, _index) do
@@ -278,7 +277,7 @@ defmodule Slime.Parser.Transform do
   def transform(:attribute_value, input, _index) do
     case input do
       {:simple, [_, content, _]} -> to_string(content)
-      {:dynamic, content} -> %EExNode{code: to_string(content), output: true}
+      {:dynamic, content} -> %EExNode{content: to_string(content), output: true}
     end
   end
 

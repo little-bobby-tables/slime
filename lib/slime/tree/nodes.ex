@@ -7,7 +7,7 @@ defmodule Slime.Tree.Nodes do
   end
 
   defmodule EExNode do
-    defstruct code: "",
+    defstruct content: "",
               output: false,
               spaces: %{},
               children: []
@@ -20,5 +20,9 @@ defmodule Slime.Tree.Nodes do
 
   defmodule HTMLCommentNode do
     defstruct content: []
+  end
+
+  defmodule DoctypeNode do
+    defstruct content: ""
   end
 end
