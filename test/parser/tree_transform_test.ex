@@ -6,6 +6,7 @@ defmodule Slime.Parser.TreeTransformTest do
   alias Slime.Parser.Nodes.EExNode
   alias Slime.Parser.Nodes.VerbatimTextNode
   alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.InlineHTMLNode
   alias Slime.Parser.Nodes.DoctypeNode
 
   test "inline tags" do
@@ -111,6 +112,38 @@ defmodule Slime.Parser.TreeTransformTest do
         attributes: [{"some-attribute", {:eex, "inline"}}],
         children: [%EExNode{content: "hey", output: true}]},
       %HTMLNode{name: "span", children: ["Text"]}
+    ]
+  end
+
+  test "inline html" do
+    slime = ~S"""
+    <html>
+      head
+        <meta content="#{interpolation}"/>
+      <body>
+        table
+          = for a <- articles do
+            <tr>#{a.name}</tr>
+      </body>
+    </html>
+    """
+    assert parse(slime) == [
+      %InlineHTMLNode{content: ["<html>"], children: [
+        %HTMLNode{name: "head", children: [
+          %InlineHTMLNode{content: [
+            %EExNode{content:
+              "\"<meta content=\\\"\#{interpolation}\\\"/>\"", output: true}]}
+        ]},
+        %InlineHTMLNode{content: ["<body>"], children: [
+          %HTMLNode{name: "table", children: [
+            %EExNode{content: "for a <- articles do", output: true, children: [
+              %InlineHTMLNode{content: [
+                %EExNode{content: "\"<tr>\#{a.name}</tr>\"", output: true}]}]}
+          ]}
+        ]},
+        %InlineHTMLNode{content: ["</body>"]}
+      ]},
+      %InlineHTMLNode{content: ["</html>"]}
     ]
   end
 

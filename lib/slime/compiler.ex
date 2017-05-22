@@ -3,10 +3,13 @@ defmodule Slime.Compiler do
   Compile a tree of parsed Slime into EEx.
   """
 
+  require IEx
+
   alias Slime.Parser.Nodes.HTMLNode
   alias Slime.Parser.Nodes.EExNode
   alias Slime.Parser.Nodes.VerbatimTextNode
   alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.InlineHTMLNode
   alias Slime.Parser.Nodes.DoctypeNode
 
   @void_elements ~w(
@@ -53,16 +56,15 @@ defmodule Slime.Compiler do
   end
 
   defp render(%DoctypeNode{content: text}), do: text
-  defp render(%VerbatimTextNode{content: content}) do
-    Enum.map(content, &render(&1))
-  end
+  defp render(%VerbatimTextNode{content: content}), do: render(content)
   defp render(%HTMLNode{name: name, spaces: spaces} = node) do
     attrs = Enum.map(node.attributes, &render_attribute/1)
+    tag_head = Enum.join([name | attrs])
 
     body = cond do
-      node.closed            -> "<" <> Enum.join([name | attrs]) <> "/>"
-      name in @void_elements -> "<" <> Enum.join([name | attrs]) <> ">"
-      true                   -> "<" <> Enum.join([name | attrs]) <> ">"
+      node.closed            -> "<" <> tag_head <> "/>"
+      name in @void_elements -> "<" <> tag_head <> ">"
+      true                   -> "<" <> tag_head <> ">"
         <> compile(node.children) <> "</" <> name <> ">"
     end
 
@@ -79,6 +81,10 @@ defmodule Slime.Compiler do
 
     leading_space(spaces) <> body <> trailing_space(spaces)
   end
+  defp render(%InlineHTMLNode{content: content, children: children}) do
+    render(content) <> compile(children)
+  end
+  defp render([h | t]), do: [h | t] |> Enum.map(&render(&1)) |> Enum.join
   defp render(raw), do: raw
 
   defp leading_space(%{leading: true}), do: " "

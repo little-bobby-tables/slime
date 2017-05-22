@@ -17,6 +17,7 @@ defmodule Slime.Parser.Transform do
   alias Slime.Parser.Nodes.EExNode
   alias Slime.Parser.Nodes.VerbatimTextNode
   alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.InlineHTMLNode
   alias Slime.Parser.Nodes.DoctypeNode
 
   @default_tag Application.get_env(:slime, :default_tag, "div")
@@ -53,7 +54,7 @@ defmodule Slime.Parser.Transform do
   def transform(:simple_tag, input, _index) do
     {tag_name, shorthand_attrs} = input[:tag]
     {attrs, inline_content, is_closed} = input[:content]
-    children = inline_content ++ (input[:children] || [])
+    children = inline_content ++ input[:children]
 
     attributes =
       shorthand_attrs
@@ -144,7 +145,9 @@ defmodule Slime.Parser.Transform do
     to_string(input)
   end
 
-  def transform(:inline_html, [_, input], _index), do: input
+  def transform(:inline_html, [_, content, children], _index) do
+    %InlineHTMLNode{content: [content], children: children}
+  end
 
   def transform(:code, input, _index) do
     {output, spaces} = case input[:inline] do

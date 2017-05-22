@@ -6,6 +6,8 @@ tag <- (comment / verbatim_text / tag_item) crlf*;
 
 tag_item <- space? (embedded_engine / inline_html / code / html_tag);
 
+inline_html <- &'<' text_content nested_tags?;
+
 html_tag <- inline_tag / simple_tag;
 
 inline_tag <- tag:tag_shortcut spaces:tag_spaces? ':'
@@ -14,9 +16,7 @@ inline_tag <- tag:tag_shortcut spaces:tag_spaces? ':'
 simple_tag <- tag:tag_shortcut spaces:tag_spaces space?
   content:attributes_with_content children:nested_tags?;
 
-nested_tags <- crlf blank_line* indent children:tag+ dedent*;
-
-inline_html <- &'<' text_content;
+nested_tags <- crlf blank_line* indent children:tag+ dedent;
 
 code <- inline:('=' '='? tag_spaces? / '-') space?
   code:code_lines children:nested_tags? optional_else:code_else_condition?;
