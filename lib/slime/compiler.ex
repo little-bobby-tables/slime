@@ -5,6 +5,8 @@ defmodule Slime.Compiler do
 
   require IEx
 
+  alias Slime.Compiler.Doctype
+
   alias Slime.Parser.Nodes.HTMLNode
   alias Slime.Parser.Nodes.EExNode
   alias Slime.Parser.Nodes.VerbatimTextNode
@@ -55,7 +57,7 @@ defmodule Slime.Compiler do
     end
   end
 
-  defp render(%DoctypeNode{content: text}), do: text
+  defp render(%DoctypeNode{name: name}), do: Doctype.for(name)
   defp render(%VerbatimTextNode{content: content}), do: render(content)
   defp render(%HTMLNode{name: name, spaces: spaces} = node) do
     attrs = Enum.map(node.attributes, &render_attribute/1)

@@ -203,7 +203,7 @@ defmodule ParserTest do
     div
     """
     assert parse(slime) == [
-      %DoctypeNode{content: "html"},
+      %DoctypeNode{name: "html"},
       %HTMLNode{name: "div"}
     ]
   end

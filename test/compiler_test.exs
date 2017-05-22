@@ -2,6 +2,14 @@ defmodule CompilerTest do
   use ExUnit.Case, async: true
 
   alias Slime.Compiler
+
+  alias Slime.Parser.Nodes.DoctypeNode
+
+  test "doctype" do
+    tree = [%DoctypeNode{name: "html"}]
+    assert Compiler.compile(tree) == "<!DOCTYPE html>"
+  end
+
   #
   # test "renders simple nesting" do
   #   tree = [%HTMLNode{tag: :div,
@@ -63,10 +71,7 @@ defmodule CompilerTest do
   #   assert Compiler.compile(tree) == expected
   # end
   #
-  # test "renders doctype" do
-  #   tree = [%DoctypeNode{content: "<!DOCTYPE html>"}]
-  #   assert Compiler.compile(tree) == "<!DOCTYPE html>"
-  # end
+
   #
   # test "renders boolean attributes" do
   #   tree = [

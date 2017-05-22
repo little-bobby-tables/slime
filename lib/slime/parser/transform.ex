@@ -44,7 +44,7 @@ defmodule Slime.Parser.Transform do
   end
 
   def transform(:doctype, input, _index) do
-    %DoctypeNode{content: to_string(input[:type])}
+    %DoctypeNode{name: to_string(input[:name])}
   end
 
   def transform(:tag, [tag, _], _index), do: tag

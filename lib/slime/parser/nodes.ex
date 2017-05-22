@@ -34,6 +34,6 @@ defmodule Slime.Parser.Nodes do
   end
 
   defmodule DoctypeNode do
-    defstruct content: ""
+    defstruct name: ""
   end
 end

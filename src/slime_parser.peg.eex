@@ -1,6 +1,6 @@
 document <- doctype? tag+ crlf* eof;
 
-doctype <- space? 'doctype' space type:(!eol .)+ eol;
+doctype <- space? 'doctype' space name:(!eol .)+ eol;
 
 tag <- (comment / verbatim_text / tag_item) crlf*;
 
