@@ -86,6 +86,9 @@ defmodule Slime.Compiler do
   defp render(%InlineHTMLNode{content: content, children: children}) do
     render(content) <> compile(children)
   end
+  defp render(%HTMLCommentNode{content: content}) do
+    "<!--" <> render(content) <> "-->"
+  end
   defp render([h | t]), do: [h | t] |> Enum.map(&render(&1)) |> Enum.join
   defp render(raw), do: raw
 
