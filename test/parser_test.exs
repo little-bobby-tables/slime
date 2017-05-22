@@ -92,19 +92,25 @@ defmodule ParserTest do
 
   test "embedded code (else is parsed as a child of if)" do
     slime = """
-    = if condition do
-      | Something
+    main
+      = if condition do
+        | Something
 
 
-    - else
-      | Something else
+      - else
+        | Something else
+
+    footer
     """
     assert parse(slime) == [
-      %EExNode{content: "if condition do", output: true, children: [
-        %VerbatimTextNode{content: ["Something"]},
-        %EExNode{content: "else", children: [
-          %VerbatimTextNode{content: ["Something else"]}]},
-      ]}
+      %HTMLNode{name: "main", children: [
+        %EExNode{content: "if condition do", output: true, children: [
+          %VerbatimTextNode{content: ["Something"]},
+          %EExNode{content: "else", children: [
+            %VerbatimTextNode{content: ["Something else"]}]}
+        ]}
+      ]},
+      %HTMLNode{name: "footer"}
     ]
   end
 

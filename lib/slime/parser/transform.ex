@@ -151,7 +151,7 @@ defmodule Slime.Parser.Transform do
   end
 
   def transform(:code, input, _index) do
-    {output, spaces} = case input[:inline] do
+    {output, spaces} = case input[:output] do
       "-" -> {false, %{}}
       [_, _, spaces] -> {true, spaces}
     end
