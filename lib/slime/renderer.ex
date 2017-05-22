@@ -4,7 +4,6 @@ defmodule Slime.Renderer do
   """
   alias Slime.Compiler
   alias Slime.Parser
-  alias Slime.Tree
 
   @doc """
   Compile Slime template to valid EEx HTML.
