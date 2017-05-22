@@ -23,11 +23,6 @@ defmodule Slime.Parser.Nodes do
     defstruct content: []
   end
 
-  defmodule EmbeddedEngineNode do
-    defstruct name: "",
-              content: []
-  end
-
   defmodule InlineHTMLNode do
     defstruct content: [],
               children: []

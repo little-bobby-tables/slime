@@ -4,6 +4,7 @@ defmodule Slime.Parser do
   """
 
   alias Slime.Parser.Preprocessor
+  alias Slime.Parser.Nodes.EExNode
   alias Slime.TemplateSyntaxError
 
   def parse(""), do: []
@@ -36,8 +37,8 @@ defmodule Slime.Parser do
 
   def parse_eex_string(input) do
     if String.contains?(input, "\#{") do
-      script = ~s("#{String.replace(input, @quote_outside_interpolation_regex, ~S(\\"))}")
-      {:eex, content: script, inline: true}
+      eex = ~s("#{String.replace(input, @quote_outside_interpolation_regex, ~S(\\"))}")
+      %EExNode{content: eex, output: true}
     else
       input
     end

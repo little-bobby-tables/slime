@@ -6,7 +6,6 @@ defmodule ParserTest do
   alias Slime.Parser.Nodes.EExNode
   alias Slime.Parser.Nodes.VerbatimTextNode
   alias Slime.Parser.Nodes.HTMLCommentNode
-  alias Slime.Parser.Nodes.EmbeddedEngineNode
   alias Slime.Parser.Nodes.InlineHTMLNode
   alias Slime.Parser.Nodes.DoctypeNode
 
@@ -178,23 +177,9 @@ defmodule ParserTest do
     """
     assert parse(slime) == [
       %VerbatimTextNode{content: [
-        %EExNode{content: "\"multiline text with \#{interpolation}\"",
+        %EExNode{content: "\"multiline\n text with \#{interpolation}\"",
                  output: true}]},
       %VerbatimTextNode{content: ["and trailing whitespace", " "]},
-    ]
-  end
-
-  test "embedded engines" do
-    slime = ~S"""
-    javascript:
-        alert('hey you');
-      alert('#{"out there in the cold"}');
-    """
-    assert parse(slime) == [
-      %EmbeddedEngineNode{name: "javascript", content: [
-        "    alert('hey you');",
-        "  alert('\#{\"out there in the cold\"}');"
-      ]}
     ]
   end
 
