@@ -16,10 +16,10 @@ defmodule Slime.Parser.AttributesKeyword do
       [class: "a b c d"]
 
       iex> Slime.Parser.AttributesKeyword.merge(
-      ...>   [class: "a", class: ["b", "c"], class: {:eex, content: "d"}],
+      ...>   [class: "a", class: ["b", "c"], class: {:eex, "d"}],
       ...>   %{class: " "}
       ...> )
-      [class: {:eex, content: ~S("a b c \#{d}"), inline: true}]
+      [class: {:eex, ~S("a b c \#{d}")}]
   """
   def merge(keyword_list, merge_rules) do
     Enum.reduce(merge_rules, keyword_list, fn ({attr, join}, result) ->
