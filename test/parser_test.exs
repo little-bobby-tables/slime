@@ -1,12 +1,12 @@
 defmodule ParserTest do
   use ExUnit.Case, async: false
 
-  alias Slime.Parser
   import Slime.Parser, only: [parse: 1]
   alias Slime.Parser.Nodes.HTMLNode
   alias Slime.Parser.Nodes.EExNode
   alias Slime.Parser.Nodes.VerbatimTextNode
   alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.EmbeddedEngineNode
   alias Slime.Parser.Nodes.InlineHTMLNode
   alias Slime.Parser.Nodes.DoctypeNode
 
@@ -175,6 +175,20 @@ defmodule ParserTest do
         %EExNode{content: "\"multiline text with \#{interpolation}\"",
                  output: true}]},
       %VerbatimTextNode{content: ["and trailing whitespace", " "]},
+    ]
+  end
+
+  test "embedded engines" do
+    slime = ~S"""
+    javascript:
+        alert('hey you');
+      alert('#{"out there in the cold"}');
+    """
+    assert parse(slime) == [
+      %EmbeddedEngineNode{name: "javascript", content: [
+        "    alert('hey you');",
+        "  alert('\#{\"out there in the cold\"}');"
+      ]}
     ]
   end
 

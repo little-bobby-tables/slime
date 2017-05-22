@@ -13,6 +13,7 @@ defmodule Slime.Parser.Nodes do
               spaces: %{},
               children: []
   end
+
   defmodule VerbatimTextNode do
     # A list of EExNode items and strings that are later concatenated.
     defstruct content: []
@@ -20,6 +21,11 @@ defmodule Slime.Parser.Nodes do
 
   defmodule HTMLCommentNode do
     defstruct content: []
+  end
+
+  defmodule EmbeddedEngineNode do
+    defstruct name: "",
+              content: []
   end
 
   defmodule InlineHTMLNode do

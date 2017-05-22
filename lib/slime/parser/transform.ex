@@ -11,13 +11,13 @@ defmodule Slime.Parser.Transform do
   alias Slime.Parser.AttributesKeyword
   alias Slime.Parser.EmbeddedEngine
   alias Slime.Parser.TextBlock
-  alias Slime.Doctype
 
   alias Slime.Parser.Nodes.HTMLNode
   alias Slime.Parser.Nodes.EExNode
   alias Slime.Parser.Nodes.VerbatimTextNode
   alias Slime.Parser.Nodes.HTMLCommentNode
   alias Slime.Parser.Nodes.InlineHTMLNode
+  alias Slime.Parser.Nodes.EmbeddedEngineNode
   alias Slime.Parser.Nodes.DoctypeNode
 
   @default_tag Application.get_env(:slime, :default_tag, "div")
@@ -132,7 +132,8 @@ defmodule Slime.Parser.Transform do
       {:empty, _} -> ""
       _ -> List.flatten(lines[:lines])
     end
-    EmbeddedEngine.render_with_engine(engine, lines)
+    %EmbeddedEngineNode{name: engine, content: lines}
+    #EmbeddedEngine.render_with_engine(engine, lines)
   end
 
   def transform(:embedded_engine_lines, input, _index) do
