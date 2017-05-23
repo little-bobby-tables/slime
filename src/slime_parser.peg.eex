@@ -1,4 +1,4 @@
-document <- doctype? tag* crlf* eof;
+document <- doctype? tag* eof;
 
 doctype <- space? 'doctype' space name:(!eol .)+ eol;
 
