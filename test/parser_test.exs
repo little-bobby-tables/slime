@@ -38,15 +38,23 @@ defmodule ParserTest do
 
   test "inline tags" do
     slime = """
-    .row: span.col-lg-12: p Hi there
+    .wrap: .row: .col-lg-12
+      .box: p One
+      .box: p Two
+    p Three
     """
     assert parse(slime) == [
-      %HTMLNode{name: "div", attributes: [{"class", "row"}], children: [
-        %HTMLNode{name: "span", attributes: [{"class", "col-lg-12"}], children: [
-          %HTMLNode{name: "p", children: [
-            %VerbatimTextNode{content: ["Hi there"]}
-          ]}]}
-      ]}
+      %HTMLNode{name: "div", attributes: [{"class", "wrap"}], children: [
+        %HTMLNode{name: "div", attributes: [{"class", "row"}], children: [
+          %HTMLNode{name: "div", attributes: [{"class", "col-lg-12"}], children: [
+            %HTMLNode{name: "div", attributes: [{"class", "box"}], children: [
+              %HTMLNode{name: "p", children: [
+                %VerbatimTextNode{content: ["One"]}]}]},
+            %HTMLNode{name: "div", attributes: [{"class", "box"}], children: [
+              %HTMLNode{name: "p", children: [
+                %VerbatimTextNode{content: ["Two"]}]}]}]}]}]},
+      %HTMLNode{name: "p", children: [
+        %VerbatimTextNode{content: ["Three"]}]},
     ]
   end
 

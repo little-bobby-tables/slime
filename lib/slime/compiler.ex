@@ -50,7 +50,7 @@ defmodule Slime.Compiler do
       value = cond do
         is_binary(value) -> value
         is_list(value) -> Enum.join(value, " ")
-        true -> to_string(value)
+        :otherwise -> to_string(value)
       end
 
       ~s( #{to_string(name)}="#{value}")
@@ -66,7 +66,7 @@ defmodule Slime.Compiler do
     body = cond do
       node.closed            -> "<" <> tag_head <> "/>"
       name in @void_elements -> "<" <> tag_head <> ">"
-      true                   -> "<" <> tag_head <> ">"
+      :otherwise             -> "<" <> tag_head <> ">"
         <> compile(node.children) <> "</" <> name <> ">"
     end
 
