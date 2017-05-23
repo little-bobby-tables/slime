@@ -2,7 +2,7 @@ document <- doctype? tag* crlf* eof;
 
 doctype <- space? 'doctype' space name:(!eol .)+ eol;
 
-tag <- (comment / verbatim_text / tag_item) blank_line*;
+tag <- (comment / verbatim_text / tag_item) crlf*;
 
 tag_item <- space? (embedded_engine / inline_html / code / html_tag);
 
@@ -16,11 +16,11 @@ inline_tag <- tag:tag_shortcut spaces:tag_spaces? ':'
 simple_tag <- tag:tag_shortcut spaces:tag_spaces space?
   content:attributes_with_content children:nested_tags?;
 
-nested_tags <- crlf blank_line* indent children:tag+ dedent;
+nested_tags <- crlf+ indent children:tag+ dedent;
 
 code <- output:('=' '='? tag_spaces? / '-') space?
   code:code_lines children:nested_tags? optional_else:code_else_condition?;
-code_else_condition <- blank_line* '-' space? 'else' space?
+code_else_condition <- crlf* space? '-' space? 'else' space?
   children:nested_tags?;
 code_lines <- code_line
             / code_line_with_brake crlf (indent code_lines dedent / code_lines);
@@ -108,7 +108,6 @@ embedded_engine_line <- text_with_interpolation / text / '';
 
 tag_name <- [a-zA-Z0-9_-]+;
 attribute_name <- [a-zA-Z0-9_@:-]+;
-blank_line <- crlf space / crlf / space;
 space <- [ \t]+;
 indent <- '\x{0E}';
 dedent <- '\x{0F}';

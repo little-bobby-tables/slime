@@ -9,7 +9,7 @@ defmodule Slime.Parser do
 
   def parse(""), do: []
   def parse(input) do
-    indented_input = Preprocessor.indent(input)
+    indented_input = Preprocessor.process(input)
     case :slime_parser.parse(indented_input) do
       {:fail, error} -> handle_syntax_error(input, indented_input, error)
       tokens -> tokens
