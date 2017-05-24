@@ -1,4 +1,4 @@
-defmodule Slime.Compiler.Doctype do
+defmodule Slime.Doctype do
   @moduledoc """
   Mapping doctype shorthands to their actual values.
   """

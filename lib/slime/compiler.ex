@@ -5,7 +5,7 @@ defmodule Slime.Compiler do
 
   require IEx
 
-  alias Slime.Compiler.Doctype
+  alias Slime.Doctype
 
   alias Slime.Parser.Nodes.HTMLNode
   alias Slime.Parser.Nodes.EExNode
