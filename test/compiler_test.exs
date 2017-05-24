@@ -3,10 +3,7 @@ defmodule CompilerTest do
 
   alias Slime.Compiler
 
-  alias Slime.Parser.Nodes.HTMLNode
-  alias Slime.Parser.Nodes.EExNode
-  alias Slime.Parser.Nodes.VerbatimTextNode
-  alias Slime.Parser.Nodes.DoctypeNode
+  alias Slime.Parser.Nodes.{HTMLNode, EExNode, VerbatimTextNode, DoctypeNode}
 
   test "renders doctype" do
     tree = [%DoctypeNode{name: "html"}]

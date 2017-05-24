@@ -2,12 +2,11 @@ defmodule ParserTest do
   use ExUnit.Case, async: false
 
   import Slime.Parser, only: [parse: 1]
-  alias Slime.Parser.Nodes.HTMLNode
-  alias Slime.Parser.Nodes.EExNode
-  alias Slime.Parser.Nodes.VerbatimTextNode
-  alias Slime.Parser.Nodes.HTMLCommentNode
-  alias Slime.Parser.Nodes.InlineHTMLNode
-  alias Slime.Parser.Nodes.DoctypeNode
+
+  alias Slime.Parser.Nodes.{
+    HTMLNode, EExNode, VerbatimTextNode,
+    HTMLCommentNode, InlineHTMLNode, DoctypeNode
+  }
 
   test "nested tags with blank lines" do
     slime = """
