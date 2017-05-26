@@ -80,7 +80,7 @@ defmodule Slime.Compiler do
       value = cond do
         is_binary(value) -> value
         is_list(value) -> Enum.join(value, " ")
-        :otherwise -> to_string(value)
+        true -> to_string(value)
       end
 
       ~s( #{to_string(name)}="#{value}")
