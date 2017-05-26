@@ -45,8 +45,15 @@ defmodule Slime.Parser.Transform do
   end
 
   def transform(:tag, [tag, _], _index), do: tag
-
   def transform(:tag_item, [_, tag], _index), do: tag
+
+  def transform(:tags, input, _index) do
+    Enum.flat_map(input, fn ([node, crlfs]) -> [node | newlines(crlfs)] end)
+  end
+
+  def transform(:nested_tags, [crlfs, _, children, _], _index) do
+    newlines(crlfs) ++ children
+  end
 
   def transform(:simple_tag, input, _index) do
     {tag_name, shorthand_attrs} = input[:tag]
@@ -72,8 +79,6 @@ defmodule Slime.Parser.Transform do
       children: children
     }
   end
-
-  def transform(:nested_tags, input, _index), do: input[:children]
 
   def transform(:html_comment, input, _index) do
     indent = indent_size(input[:indent])
@@ -324,6 +329,14 @@ defmodule Slime.Parser.Transform do
   defp expand_attr_shortcut(type, value) do
     spec = Map.fetch!(@shortcut, type)
     expand_shortcut(spec, value)
+  end
+
+  def newlines(crlfs) do
+    if Application.get_env(:slime, :keep_lines) do
+      Enum.map(crlfs, fn (_) -> %VerbatimTextNode{content: ["\n"]} end)
+    else
+      []
+    end
   end
 
   def expand_shortcut(spec, value) do

@@ -19,10 +19,9 @@ defmodule Slime.Compiler do
 
   def compile([]), do: ""
   def compile(tree) do
-    lines_sep = if Application.get_env(:slime, :keep_lines), do: "\n", else: ""
     tree
     |> Enum.map(&render(&1))
-    |> Enum.join(lines_sep)
+    |> Enum.join
     |> String.replace("\r", "")
   end
 
