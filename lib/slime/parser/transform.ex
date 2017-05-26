@@ -299,15 +299,6 @@ defmodule Slime.Parser.Transform do
   def transform(:crlf, input, _index), do: to_string(input)
   def transform(_symdol, input, _index), do: input
 
-  defp fix_indents(lines), do: lines |> Enum.reverse |> fix_indents(0, [])
-  defp fix_indents([], _, result), do: result
-  defp fix_indents([{0, ""} | rest], current, result) do
-    fix_indents(rest, current, [{current, ""} | result])
-  end
-  defp fix_indents([{indent, _} = line | rest], _current, result) do
-    fix_indents(rest, indent, [line | result])
-  end
-
   def remove_empty_lines(lines) do
     Enum.filter(lines, fn
       ({0, ""}) -> false
