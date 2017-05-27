@@ -5,10 +5,12 @@ defmodule Slime.Compiler do
 
   alias Slime.Doctype
 
-  alias Slime.Parser.Nodes.{
-    HTMLNode, EExNode, VerbatimTextNode,
-    HTMLCommentNode, InlineHTMLNode, DoctypeNode
-  }
+  alias Slime.Parser.Nodes.HTMLNode
+  alias Slime.Parser.Nodes.EExNode
+  alias Slime.Parser.Nodes.VerbatimTextNode
+  alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.InlineHTMLNode
+  alias Slime.Parser.Nodes.DoctypeNode
 
   @void_elements ~w(
     area br col doctype embed hr img input link meta base param

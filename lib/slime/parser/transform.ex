@@ -10,10 +10,12 @@ defmodule Slime.Parser.Transform do
   alias Slime.Parser.EmbeddedEngine
   alias Slime.Parser.TextBlock
 
-  alias Slime.Parser.Nodes.{
-    HTMLNode, EExNode, VerbatimTextNode,
-    HTMLCommentNode, InlineHTMLNode, DoctypeNode
-  }
+  alias Slime.Parser.Nodes.HTMLNode
+  alias Slime.Parser.Nodes.EExNode
+  alias Slime.Parser.Nodes.VerbatimTextNode
+  alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.InlineHTMLNode
+  alias Slime.Parser.Nodes.DoctypeNode
 
   @default_tag Application.get_env(:slime, :default_tag, "div")
   @sort_attrs Application.get_env(:slime, :sort_attrs, true)

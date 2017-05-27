@@ -3,10 +3,12 @@ defmodule ParserTest do
 
   import Slime.Parser, only: [parse: 1]
 
-  alias Slime.Parser.Nodes.{
-    HTMLNode, EExNode, VerbatimTextNode,
-    HTMLCommentNode, InlineHTMLNode, DoctypeNode
-  }
+  alias Slime.Parser.Nodes.HTMLNode
+  alias Slime.Parser.Nodes.EExNode
+  alias Slime.Parser.Nodes.VerbatimTextNode
+  alias Slime.Parser.Nodes.HTMLCommentNode
+  alias Slime.Parser.Nodes.InlineHTMLNode
+  alias Slime.Parser.Nodes.DoctypeNode
 
   test "nested tags with blank lines" do
     slime = """
