@@ -48,7 +48,7 @@ defmodule Slime.Parser.Transform do
   def transform(:tag_item, [_, tag], _index), do: tag
 
   def transform(:tags, input, _index) do
-    Enum.flat_map(input, fn ([node, crlfs]) -> [node | newlines(crlfs)] end)
+    Enum.flat_map(input, fn ([tag, crlfs]) -> [tag | newlines(crlfs)] end)
   end
 
   def transform(:nested_tags, [crlfs, _, children, _], _index) do
@@ -138,7 +138,7 @@ defmodule Slime.Parser.Transform do
       {tag, content} -> %HTMLNode{name: tag,
         attributes: (content[:attributes] || []),
         children: content[:children]}
-      node -> node
+      content -> content
     end
   end
 
