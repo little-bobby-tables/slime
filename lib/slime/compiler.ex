@@ -3,8 +3,6 @@ defmodule Slime.Compiler do
   Compile a tree of parsed Slime into EEx.
   """
 
-  require IEx
-
   alias Slime.Doctype
 
   alias Slime.Parser.Nodes.{

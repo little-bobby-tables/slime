@@ -5,8 +5,6 @@ defmodule Slime.Parser.Transform do
   See https://github.com/seancribbs/neotoma/wiki#working-with-the-ast
   """
 
-  require IEx
-
   import Slime.Parser.Preprocessor, only: [indent_size: 1]
   alias Slime.Parser.AttributesKeyword
   alias Slime.Parser.EmbeddedEngine
